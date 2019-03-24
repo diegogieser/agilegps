@@ -3,21 +3,44 @@ var webpack = require('webpack');
 var NODE_ENV = process.env.NODE_ENV || null;
 
 var plugins = [];
-plugins.push(new webpack.ProvidePlugin({
-	'Promise': 'bluebird'
-}));
+// plugins.push(new webpack.ProvidePlugin({
+// 	'Promise': 'bluebird'
+// }));
 
 
 if (NODE_ENV === 'production') {
-	plugins.push(new webpack.optimize.UglifyJsPlugin());
+	// plugins.push(new webpack.optimize.UglifyJsPlugin());
 	plugins.push(new webpack.DefinePlugin({
 		'process.env.NODE_ENV': '"production"'
 	}))
 }
-
-plugins.push(new webpack.optimize.CommonsChunkPlugin({ name: 'vendors', filename: 'vendors.js' }));
+// todo config.optimization.splitChunks
+// plugins.push(new webpack.optimize.CommonsChunkPlugin({ name: 'vendors', filename: 'vendors.js' }));
 
 module.exports = {
+	optimization: {
+		splitChunks: {
+		  chunks: 'async',
+		  minSize: 30000,
+		  maxSize: 0,
+		  minChunks: 1,
+		  maxAsyncRequests: 5,
+		  maxInitialRequests: 3,
+		  automaticNameDelimiter: '~',
+		  name: true,
+		  cacheGroups: {
+			vendors: {
+			  test: /[\\/]node_modules[\\/]/,
+			  priority: -10
+			},
+			default: {
+			  minChunks: 2,
+			  priority: -20,
+			  reuseExistingChunk: true
+			}
+		  }
+		}
+	},
 	context: __dirname + '/src/client',
 	node: {
 		fs: "empty",
@@ -25,26 +48,26 @@ module.exports = {
 	},
 	entry: {
 		app: './main.js',
-		vendors: [
-			'bluebird',
-			'bootstrap/less/bootstrap.less',
-			'cookies-js',
-			'events',
-			'j2c',
-			'lodash',
-			'mithril',
-			'moment',
-			'nprogress',
-			'pikaday2',
-			'raf',
-			'redux',
-			'redux-logger',
-			'setimmediate',
-			'socket.io-client',
-			'validator',
-			'velocity-animate',
-			'windrose',
-		]
+		// vendors: [
+		// 	'bluebird',
+		// 	'bootstrap/less/bootstrap.less',
+		// 	'cookies-js',
+		// 	'events',
+		// 	'j2c',
+		// 	'lodash',
+		// 	'mithril',
+		// 	'moment',
+		// 	'nprogress',
+		// 	'pikaday2',
+		// 	'raf',
+		// 	'redux',
+		// 	'redux-logger',
+		// 	'setimmediate',
+		// 	'socket.io-client',
+		// 	'validator',
+		// 	'velocity-animate',
+		// 	'windrose',
+		// ]
 	},
 	output: {
 		path: __dirname + '/public/app',
@@ -58,9 +81,11 @@ module.exports = {
 			{
 				test: /\.js$/,
 				exclude: /node_modules/,
-				loader: "babel-loader",
-				query: {
-					presets: ['es2015']
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: ['@babel/preset-env']
+					}
 				}
 			},
 			{

@@ -278,7 +278,7 @@ module.exports = function reducer (state, action) {
         case 'CHANGED_VEHICLE_HISTORY':
             var vehiclesByID = _.cloneDeep(state.vehiclesByID);
             vehiclesByID[action.event.id] = action.event;
-            let newState = Object.assign({}, state, {
+            newState = Object.assign({}, state, {
                 vehiclesByID: vehiclesByID,
                 lastUpdated: new Date(),
             });
