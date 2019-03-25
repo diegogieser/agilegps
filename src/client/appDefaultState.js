@@ -1,9 +1,9 @@
-'use strict';
+// 'use strict';
 const i18n = require('./i18n');
 const hasLang = i18n.hasLang;
 
-const defaults = {
-    lang: '', // set below
+module.exports.defaults = {
+    lang: 'en-US', // set below
 
     user: {},
 
@@ -51,13 +51,12 @@ const defaults = {
 
 };
 
-if (navigator.languages) {
-	for (const lang of navigator.languages) {
-		if (hasLang(lang)) {
-			defaults.lang = lang;
-			break;
-		}
-	}
-}	
+// if (navigator.languages) {
+// 	for (const lang of navigator.languages) {
+// 		if (hasLang(lang)) {
+// 			defaults.lang = lang;
+// 			break;
+// 		}
+// 	}
+// }	
 
-module.exports = defaults;

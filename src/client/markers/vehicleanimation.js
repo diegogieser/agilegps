@@ -56,7 +56,7 @@ module.exports.clickMarkerByID = function (id) {
     new google.maps.event.trigger(markersById[id], 'click');
 }
 
-let lastState = require('../appDefaultState');
+let lastState = require('../appDefaultState').defaults;
 
 store.subscribe(function () {
     TheMap.getReady().then(function () {

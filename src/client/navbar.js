@@ -1,10 +1,10 @@
 /* Copyright (c) 2016 Grant Miner */
 'use strict';
 import {translate as t} from './i18n';
-import m from 'mithril';
-import appState from './appState';
-import moment from 'moment';
-import xcloud from './svg/xcloud.js';
+const m = require('mithril');
+const appState = require('./appState');
+const moment = require('moment');
+const xcloud = require('./svg/xcloud.js');
 const isUserMetric = require('./isUserMetric');
 
 module.exports.controller = function (args, extras) {

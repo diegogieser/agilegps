@@ -1,5 +1,5 @@
 /* Copyright (c) 2016 Grant Miner */
-'use strict';
+// 'use strict';
 const m = require('mithril');
 const navbar = require('./navbar');
 const TheMap = require('./map');

@@ -26,9 +26,9 @@ m.deferred.onerror = function(e) {
 }
 m.mount(document.getElementById('root'), require('./root'));
 
-const appState = require('./appState');
-
 m.mount(document.getElementById('root'), root);
+
+// const appState = require('./appState');
 
 
 // if ('scrollRestoration' in history) {

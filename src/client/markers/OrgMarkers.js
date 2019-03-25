@@ -51,7 +51,7 @@ module.exports.clickMarkerByVehicleID = function (id) {
     }
 }
 
-let lastState = require('../appDefaultState');
+let lastState = require('../appDefaultState').defaults;
 
 store.subscribe(function () {
     TheMap.getReady().then(function () {
