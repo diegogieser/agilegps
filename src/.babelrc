@@ -6,5 +6,6 @@
 		// 	"method": "coroutine"
 		// }],
 		// "module:mithril-objectify"
+		"@babel/plugin-transform-regenerator",
 	]
 }

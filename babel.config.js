@@ -13,6 +13,17 @@ const presets = [
 	],
 ];
 
+const plugins = [
+	// ["transform-es2015-modules-commonjs"],
+	// ["transform-async-to-module-method", {
+	// 	"module": "bluebird",
+	// 	"method": "coroutine"
+	// }],
+	// "module:mithril-objectify"
+	"@babel/plugin-transform-regenerator",
+];
+
 module.exports = {
-	presets
+	presets,
+	plugins,
 };

@@ -19,7 +19,6 @@ require('./appSocketState');
 //     warnings: false
 // });
 
-
 const m = require('mithril');
 
 m.deferred.onerror = function(e) {
@@ -29,6 +28,7 @@ m.mount(document.getElementById('root'), require('./root'));
 
 const appState = require('./appState');
 
+m.mount(document.getElementById('root'), root);
 
 
 // if ('scrollRestoration' in history) {

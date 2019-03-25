@@ -1,6 +1,6 @@
 'use strict';
-import deepFreeze from 'deep-freeze';
-import {hasLang} from './i18n';
+const i18n = require('./i18n');
+const hasLang = i18n.hasLang;
 
 const defaults = {
     lang: '', // set below
@@ -52,12 +52,12 @@ const defaults = {
 };
 
 if (navigator.languages) {
-    for (let lang of navigator.languages) {
-        if (hasLang(lang)) {
-            defaults.lang = lang;
-            break;
-        }
-    }
-}
+	for (const lang of navigator.languages) {
+		if (hasLang(lang)) {
+			defaults.lang = lang;
+			break;
+		}
+	}
+}	
 
-module.exports = deepFreeze(defaults);
+module.exports = defaults;
