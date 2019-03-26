@@ -1,6 +1,6 @@
 'use strict';
 var webpack = require('webpack');
-var NODE_ENV = process.env.NODE_ENV || null;
+// var NODE_ENV = process.env.NODE_ENV || null;
 
 var plugins = [];
 // plugins.push(new webpack.ProvidePlugin({
@@ -8,12 +8,12 @@ var plugins = [];
 // }));
 
 
-if (NODE_ENV === 'production') {
+// if (NODE_ENV === 'production') {
 	// plugins.push(new webpack.optimize.UglifyJsPlugin());
-	plugins.push(new webpack.DefinePlugin({
-		'process.env.NODE_ENV': '"production"'
-	}))
-}
+	// plugins.push(new webpack.DefinePlugin({
+	// 	'process.env.NODE_ENV': '"production"'
+	// }))
+// }
 // todo config.optimization.splitChunks
 // plugins.push(new webpack.optimize.CommonsChunkPlugin({ name: 'vendors', filename: 'vendors.js' }));
 
@@ -41,6 +41,7 @@ module.exports = {
 	// 	  }
 	// 	}
 	// },
+	mode: 'development',
 	context: __dirname + '/src/client',
 	node: {
 		fs: "empty",
@@ -83,12 +84,6 @@ module.exports = {
 				exclude: /node_modules/,
 				use: {
 					loader: 'babel-loader',
-					options: {
-						// presets: ['@babel/preset-env'],
-						// plugins: [
-						// 	"@babel/plugin-transform-regenerator",
-						// ],
-					}
 				}
 			},
 			{

@@ -19,7 +19,7 @@ const plugins = [
 	// 	"module": "bluebird",
 	// 	"method": "coroutine"
 	// }],
-	// "module:mithril-objectify"
+	"module:mithril-objectify",
 	"@babel/plugin-transform-regenerator",
 ];
 
