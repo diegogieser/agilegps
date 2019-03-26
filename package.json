@@ -23,6 +23,7 @@
   "homepage": "https://github.com/llambda/agilegps#readme",
   "dependencies": {
     "@babel/polyfill": "^7.4.0",
+    "@babel/plugin-transform-regenerator": "^7.4.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
     "bootstrap": "^3.4.1",
@@ -87,7 +88,6 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.4.0",
-    "@babel/plugin-transform-regenerator": "^7.4.0",
     "@babel/preset-env": "^7.4.2",
     "@swc/core": "^1.0.39",
     "babel-loader": "^8.0.5",
