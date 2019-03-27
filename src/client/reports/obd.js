@@ -13,7 +13,7 @@ const formatDate = require('../formatDate');
 
 // need location, city, state, idleStart, idleEnd, duration
 //total: vehicle, idling total
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 
     if (!(args.result() && args.result().vehicles && args.result().results)) {
         return '';

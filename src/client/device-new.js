@@ -10,7 +10,7 @@ const pikaday = require('pikaday2').default;
 const _ = require('lodash');
 const moment = require('moment');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
     const state = appState.getState();
     ctrl.device = new Device(state.devicesByID[state.viewID]);
@@ -42,7 +42,7 @@ module.exports.controller = function(args, extras) {
 
 const formitem = require('./formitem');
 
-module.exports.view = function(ctrl) {
+export function view(ctrl) {
 	const state = appState.getState();
 	const device = ctrl.device;
 

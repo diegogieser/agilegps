@@ -9,7 +9,7 @@ const Organization = require('../common/models/Organization');
 const _ = require('lodash');
 const keyhelper = require('./keyhelper');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
     const ctrl = this;
     const state = appState.getState();
     ctrl.org = new Organization(state.orgsByID[state.viewID]);
@@ -31,7 +31,7 @@ module.exports.controller = function(args, extras) {
 	// })
 };
 
-module.exports.view = function(ctrl) {
+export function view(ctrl) {
     const org = ctrl.org;
     const editing = ctrl.editing;
 

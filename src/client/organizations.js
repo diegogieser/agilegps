@@ -3,11 +3,9 @@
 import {translate as t} from './i18n';
 const m = require('mithril');
 const appState = require('./appState');
-const navbar = require('./navbar');
 const catchhandler = require('./catchhandler');
-const withAuth = require('./withAuth');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 
 	ctrl.delete = function (org) {
@@ -20,7 +18,7 @@ module.exports.controller = function(args, extras) {
 	}
 };
 
-module.exports.view = function(ctrl) {
+export function view(ctrl) {
 	const state = appState.getState();
 	const isAdmin = state.user.isAdmin;
 

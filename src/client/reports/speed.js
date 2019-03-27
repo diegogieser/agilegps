@@ -25,7 +25,7 @@ function renderLocation(item) {
     return res;
 }
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 
     if (!(args.result() && args.result().vehicles && args.result().results)) {
         return '';

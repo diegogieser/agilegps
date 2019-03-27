@@ -1,5 +1,5 @@
 'use strict';
-const translatejs = require('translate.js');
+// const translatejs = require('translate.js');
 const appState = require('./appState');
 
 const messages = {
@@ -224,12 +224,13 @@ const options = {
 	pluralize: function(n,translKey){ return Math.abs(n); }  //[Function(count,translationKey)]: Provides a custom pluralization mapping function.
 }
 
-function translate() {
+function translate(item) {
 	const state = appState.getState();
 	const lang = state.lang;
-	const t = translatejs(messages[lang], [options]);
+	// const t = translatejs(messages[lang], [options]);
 
-	return t.apply(null, arguments);
+	// return t.apply(null, arguments);
+	return item;
 }
 module.exports.translate = translate;
 

@@ -2,9 +2,9 @@
 'use strict';
 const m = require('mithril');
 
-module.exports.controller = function(args, extras) {};
+export function controller(args, extras) {};
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	return m('div', [
 		m('.col-sm-2'),
 		m('div.business-table.col-sm-8',

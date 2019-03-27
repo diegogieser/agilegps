@@ -3,12 +3,12 @@
 const m = require('mithril');
 const alertTypes = ['Location Enter', 'Location Exit', 'Speed Alert'];
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 	ctrl.selectedAlert = m.prop();
 };
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	return m('div', [
 		m('.col-sm-1'),
 		m('.col-sm-10', [

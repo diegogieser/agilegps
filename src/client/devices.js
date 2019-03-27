@@ -8,7 +8,7 @@ const sorts = require('./sorts');
 const moment = require('moment');
 const catchhandler = require('./catchhandler');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 	ctrl.delete = function (device) {
 		const result = window.confirm('Are you sure you want to delete ' + device.imei + '?');
@@ -19,7 +19,7 @@ module.exports.controller = function(args, extras) {
 	}
 };
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	const state = appState.getState();
 	const orgid = state.selectedOrg.id;
 

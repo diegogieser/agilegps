@@ -9,6 +9,7 @@ const presets = [
 				safari: "11.1",
 			},
 			useBuiltIns: "usage",
+			modules: 'commonjs',
 		},
 	],
 ];
@@ -19,6 +20,7 @@ const plugins = [
 	// 	"module": "bluebird",
 	// 	"method": "coroutine"
 	// }],
+	"@babel/plugin-transform-modules-commonjs",
 	"module:mithril-objectify",
 	"@babel/plugin-transform-regenerator",
 ];

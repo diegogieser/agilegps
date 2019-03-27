@@ -1,9 +1,9 @@
 /* Copyright (c) 2016 Grant Miner */
 'use strict';
-let v = require('validator');
-let _ = require('lodash');
+const v = require('validator');
+const _ = require('lodash');
 
-let Device = function (data) {
+const Device = function (data) {
     if (data == null) {
         data = {};
     }

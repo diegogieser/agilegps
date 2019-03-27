@@ -2,10 +2,10 @@
 'use strict';
 const m = require('mithril');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 }
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	return m('div',
 		// m.component(navbar),
 		m('div', 'Locations not yet implemented')

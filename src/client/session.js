@@ -5,7 +5,7 @@ const m = require('mithril');
 const appState = require('./appState');
 const catchhandler = require('./catchhandler');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 	const state = appState.getState();
 
@@ -65,7 +65,7 @@ module.exports.controller = function(args, extras) {
 	};
 };
 
-module.exports.view = function(ctrl) {
+export function view(ctrl) {
 
 	const state = appState.getState();
 

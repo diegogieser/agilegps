@@ -8,7 +8,7 @@ const moment = require('moment');
 const _ = require('lodash');
 const withAuth = require('./withAuth');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 	let creatingFleet;
 
@@ -92,7 +92,7 @@ module.exports.controller = function(args, extras) {
 const truckSvg = require('./svg/truck');
 const getselectvalues = require('./getselectvalues');
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 
 	const state = appState.getState();
 	const fleets = _.toArray(state.fleetsByID);

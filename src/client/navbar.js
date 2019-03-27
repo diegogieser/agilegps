@@ -7,7 +7,7 @@ const moment = require('moment');
 const xcloud = require('./svg/xcloud.js');
 const isUserMetric = require('./isUserMetric');
 
-module.exports.controller = function (args, extras) {
+export function controller(args, extras) {
     const ctrl = this;
 
     ctrl.manageOpen = m.prop(false);
@@ -37,7 +37,7 @@ module.exports.controller = function (args, extras) {
     // }
 }
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
     const state = appState.getState();
     const view = state.view;
     const subview = state.subview;

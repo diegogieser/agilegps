@@ -12,12 +12,11 @@ const appState = require('../appState');
 const _ = require('lodash');
 let lastinfowindow;
 
-function closeInfoWindow() {
+export function closeInfoWindow() {
     if (lastinfowindow) lastinfowindow.close();
 }
-module.exports.closeInfoWindow = closeInfoWindow;
 
-module.exports.create = function (marker, item, position) {
+export function create(marker, item, position) {
     return function () {
         if (!item.last) {
             item.last = _.cloneDeep(item);

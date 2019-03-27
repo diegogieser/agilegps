@@ -12,7 +12,7 @@ const orgselector = require('./orgselector');
 const formitem = require('./formitem');
 const keyhelper = require('./keyhelper');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
     const ctrl = this;
     const state = appState.getState();
     ctrl.user = new User(state.usersByID[state.viewID]);
@@ -42,7 +42,7 @@ module.exports.controller = function(args, extras) {
     }
 };
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	const state = appState.getState();
 
     return m('div', [

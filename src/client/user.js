@@ -2,7 +2,7 @@
 'use strict';
 let m = require('mithril');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
     // this.user = m.prop();
     // this.orgid = m.route.param('orgid');
     // let id = m.route.param('id');
@@ -15,7 +15,7 @@ module.exports.controller = function(args, extras) {
     // .then(this.user)
 };
 
-module.exports.view = function(ctrl) {
+export function view(ctrl) {
     return m('div.business-table', [
         m('.btn', 'User'),
         m('pre', JSON.stringify(ctrl.user(), undefined, 4))

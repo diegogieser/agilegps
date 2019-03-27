@@ -28,7 +28,7 @@ const todir = require('../common/todir');
 const isUserMetric = require('./isUserMetric');
 const formatDate = require('./formatDate');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 	const state = appState.getState();
 
@@ -188,7 +188,7 @@ module.exports.controller = function(args, extras) {
 };
 
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	const state = appState.getState();
 	const advancedUI = state.user.advancedMode;
 

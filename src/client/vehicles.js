@@ -5,7 +5,7 @@ const sorts = require('./sorts');
 const catchhandler = require('./catchhandler');
 const appState = require('./appState');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 
 	ctrl.delete = function (vehicle) {
@@ -18,7 +18,7 @@ module.exports.controller = function(args, extras) {
 	}
 };
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	const state = appState.getState();
 
 	return m('div', [

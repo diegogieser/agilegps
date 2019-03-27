@@ -7,7 +7,7 @@ const sorts = require('./sorts');
 const catchhandler = require('./catchhandler');
 const _ = require('lodash');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 
 	ctrl.delete = function (user) {
@@ -31,7 +31,7 @@ function getSecurtyLevel(user) {
 	return t('User');
 }
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	const state = appState.getState();
 	const subview = state.subview;
 	const orgid = state.selectedOrg.id;

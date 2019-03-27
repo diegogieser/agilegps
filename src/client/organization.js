@@ -24,7 +24,7 @@ const ClickListenerFactory = require('./markers/clicklistenerfactory');
 const formatDate = require('./formatDate');
 const isUserMetric = require('./isUserMetric');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 	ctrl.selectedItem = m.prop({});
 
@@ -39,7 +39,7 @@ module.exports.controller = function(args, extras) {
 	}
 };
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	const state = appState.getState();
 
 	const advancedUI = state.user.advancedMode;

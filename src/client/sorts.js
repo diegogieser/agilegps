@@ -24,7 +24,7 @@ function getProp(name, obj) {
 }
 
 
-function sorts(list) {
+export function sorts(list) {
     return {
         onclick: function(e) {
             let prop = e.target.getAttribute("data-sort-by")
@@ -46,4 +46,3 @@ function sorts(list) {
         }
     }
 }
-module.exports = sorts;

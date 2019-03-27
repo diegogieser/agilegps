@@ -8,7 +8,7 @@ const _ = require('lodash');
 const appState = require('./appState');
 const keyhelper = require('./keyhelper');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 
 	const ctrl = this;
 	const state = appState.getState();
@@ -45,7 +45,7 @@ module.exports.controller = function(args, extras) {
 };
 const formitem = require('./formitem');
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	const state = appState.getState();
 
 	const devices = _.toArray(state.devicesByID).filter(function (device) {

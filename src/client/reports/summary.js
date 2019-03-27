@@ -8,7 +8,7 @@ const tomiles = require('../tomiles');
 const _ = require('lodash');
 const isUserMetric = require('../isUserMetric');
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	if (!(args.result() && args.result().vehicles && args.result().results)) {
 		return m('div');
 	}

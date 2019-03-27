@@ -4,23 +4,29 @@
 Uses Redux ( https://github.com/reactjs/redux ) to handle and keep all application state in one place.
 */
 const m = require('mithril');
+const NProgress = require('NProgress')
 const redux = require('redux');
 const _ = require('lodash');
 const Cookies = require('cookies-js');
 const moment = require('moment');
 const createLogger = require('redux-logger').createLogger;
 const defaultState = require('./appDefaultState').defaults;
+const REDUX_LOGGING = false;
+const logger = createLogger({
+    duration: true,
+    timestamp: true
+});
 
-const reducer = function reducer (state, action) {
+const store = redux.createStore((state, action) => {
     if (!state) {
-		if (history.state) {
-			return Object.assign({}, defaultState, history.state);
+		if (window.history.state) {
+			return Object.assign({}, defaultState, window.history.state);
 		} else {
 			return defaultState;
 		}
     }
 
-	var newState = {};
+	const newState = {};
 
     switch(action.type) {
         case 'SOCKET_CONNECT':
@@ -341,54 +347,53 @@ const reducer = function reducer (state, action) {
         default:
             return state;
     }
-}
+}, REDUX_LOGGING ? redux.applyMiddleware(logger) : null);
 
-const REDUX_LOGGING = false
-const logger = createLogger({
-    duration: true,
-    timestamp: true
+setImmediate(function () {
+	if (Cookies.get('jwt')) {
+		login();
+	}
+	// START routing
+	let lastViewState = {};
+	store.subscribe(function () {
+		let state = store.getState();
+		let viewState = {};
+		viewState.view = state.view;
+		viewState.subview = state.subview;
+		viewState.viewID = state.viewID;
+
+		if (!_.isEqual(lastViewState, viewState)) {
+			lastViewState = viewState;
+			window.history.pushState(viewState, viewState.view + ' ' + viewState.subview + ' ' + viewState.viewID, '?' + JSON.stringify(viewState));
+		}
+		//
+		if (['EDIT', 'RAWEVENTS', 'EVENTS', 'EXCEPTIONS'].indexOf(state.subview) < 0) { // don't redraw certain views
+			console.log('redrawing');
+			m.redraw();
+		}
+	});
+
+	window.onpopstate = function (ev) {
+		let location = ev.state;
+		store.dispatch({
+			type: 'VIEW',
+			view: location.view,
+			subview: location.subview,
+			viewID: location.viewID
+		})
+	}
+	// END routing
 });
-const store = redux.createStore(reducer, REDUX_LOGGING ? redux.applyMiddleware(logger) : null);
 
-if (Cookies.get('jwt')) {
-    setImmediate(function () {
-        login();
+
+export function viewLogin() {
+    store.dispatch({
+        type: 'VIEW',
+        view: 'SESSION'
     });
 }
 
-// START routing
-let lastViewState = {};
-store.subscribe(function () {
-    let state = store.getState();
-    let viewState = {};
-    viewState.view = state.view;
-    viewState.subview = state.subview;
-    viewState.viewID = state.viewID;
-
-    if (!_.isEqual(lastViewState, viewState)) {
-        lastViewState = viewState;
-        window.history.pushState(viewState, viewState.view + ' ' + viewState.subview + ' ' + viewState.viewID, '?' + JSON.stringify(viewState));
-    }
-    //
-    if (['EDIT', 'RAWEVENTS', 'EVENTS', 'EXCEPTIONS'].indexOf(state.subview) < 0) { // don't redraw certain views
-        console.log('redrawing');
-        m.redraw();
-    }
-});
-
-window.onpopstate = function (ev) {
-    let location = ev.state;
-    store.dispatch({
-        type: 'VIEW',
-        view: location.view,
-        subview: location.subview,
-        viewID: location.viewID
-    })
-}
-// END routing
-
-
-function auth() {
+export function auth() {
     return {
         'headers': headers(),
         // 'credentials': 'include' // include JWT cookie
@@ -594,19 +599,7 @@ function loadSiteAdminData() {
     });
 }
 
-function afterLogin() {
-
-}
-
-function viewLogin() {
-    store.dispatch({
-        type: 'VIEW',
-        view: 'SESSION'
-    });
-}
-module.exports.viewLogin = viewLogin;
-
-function login (data) { // data is an object {username, password}
+export function login (data) { // data is an object {username, password}
 	NProgress.inc();
 	
     let initial;
@@ -658,9 +651,8 @@ function login (data) { // data is an object {username, password}
         return next;
     });
 }
-module.exports.login = login;
 
-module.exports.logOut = function() {
+export function logOut() {
     return Promise.resolve(fetch('/api/session', Object.assign({
         method: 'DELETE'
     }, authWithCookies())))
@@ -673,30 +665,28 @@ module.exports.logOut = function() {
     })
 };
 
-module.exports.getState = function () {
+export function getState() {
     return store.getState();
 }
 
-module.exports.getStore = function () {
+export function getStore() {
     return store;
 }
 
-module.exports.getOrgName = function (id) {
+export function getOrgName(id) {
     let org = store.getState().orgsByID[id];
     return org ? org.name : '';
 }
 
-
-function selectFleetAll() {
+export function selectFleetAll() {
     store.dispatch({
         type: 'SELECT_FLEET_ALL',
     });
 
     return Promise.resolve();
 }
-module.exports.selectFleetAll = selectFleetAll;
 
-function selectOrgByID (orgid) {
+export function selectOrgByID (orgid) {
     if (!orgid) {
         throw new Error('null orgid');
     }
@@ -716,9 +706,8 @@ function selectOrgByID (orgid) {
         NProgress.done();
     })
 }
-module.exports.selectOrgByID = selectOrgByID;
 
-module.exports.deleteOrg = function (org) {
+export function deleteOrg (org) {
 
     return Promise.resolve(fetch('/api/organizations/' + org.id, Object.assign(auth(), {
         method: 'DELETE'
@@ -734,7 +723,7 @@ module.exports.deleteOrg = function (org) {
     })
 }
 
-module.exports.deleteUser = function (user) {
+export function deleteUser(user) {
     let url;
     if (user.orgid) {
         url = '/api/organizations/' + user.orgid + '/users/' + user.username;
@@ -756,7 +745,7 @@ module.exports.deleteUser = function (user) {
     })
 }
 
-module.exports.deleteDevice = function (device) {
+export function deleteDevice(device) {
     return Promise.resolve(fetch('/api/devices/' + device.imei, Object.assign({
         method: 'DELETE'
     }, auth())))
@@ -771,7 +760,7 @@ module.exports.deleteDevice = function (device) {
     })
 }
 
-module.exports.deleteVehicle = function (vehicle) {
+export function deleteVehicle(vehicle) {
     let url;
     if (vehicle.orgid) {
         url = '/api/organizations/' + vehicle.orgid + '/vehicles/' + vehicle.id;
@@ -793,7 +782,7 @@ module.exports.deleteVehicle = function (vehicle) {
     })
 }
 
-module.exports.saveFleet = function (fleet) {
+export function saveFleet(fleet) {
     NProgress.start();
 
     if (fleet.id) {
@@ -831,7 +820,7 @@ module.exports.saveFleet = function (fleet) {
     }
 }
 
-module.exports.deleteFleet = function (fleet) {
+export function deleteFleet(fleet) {
     NProgress.start();
 
     let url;
@@ -859,7 +848,7 @@ module.exports.deleteFleet = function (fleet) {
     })
 }
 
-module.exports.selectFleet = function (fleet) {
+export function selectFleet(fleet) {
     store.dispatch({
         type: 'SELECT_FLEET',
         fleet: fleet
@@ -892,7 +881,7 @@ function updateSelectedVehicleHistory() {
         })
 }
 
-function update() {
+export function update() {
     let state = store.getState();
 
     if (state.selectedVehicle) {
@@ -901,9 +890,8 @@ function update() {
         return loadVehicles(state.selectedOrg.id);
     }
 }
-module.exports.update = update;
 
-module.exports.selectVehicleByID = function (id) {
+export function selectVehicleByID(id) {
     let state = store.getState();
 
     store.dispatch({
@@ -921,7 +909,7 @@ module.exports.selectVehicleByID = function (id) {
     }
 }
 
-module.exports.saveOrg = function(org) {
+export function saveOrg(org) {
     NProgress.start();
 
     if (org.id) {
@@ -958,7 +946,8 @@ module.exports.saveOrg = function(org) {
         })
     }
 }
-module.exports.saveUser = function(user) {
+
+export function saveUser(user) {
     NProgress.start();
     return Promise.resolve(fetch('/api/users/' + user.username, put(user)))
     .then(function (response) {
@@ -976,7 +965,7 @@ module.exports.saveUser = function(user) {
     })
 }
 
-module.exports.putVehicle = function(vehicle) {
+export function putVehicle(vehicle) {
     NProgress.start();
     return Promise.resolve(fetch('/api/organizations/' + vehicle.orgid + '/vehicles/' + vehicle.id, put(vehicle)))
     .then(function (response) {
@@ -994,7 +983,7 @@ module.exports.putVehicle = function(vehicle) {
     })
 }
 
-module.exports.postVehicle = function(vehicle) {
+export function postVehicle(vehicle) {
     NProgress.start();
     delete vehicle.id;
 
@@ -1014,7 +1003,7 @@ module.exports.postVehicle = function(vehicle) {
     })
 }
 
-module.exports.saveDevice = function(device) {
+export function saveDevice(device) {
     NProgress.start();
     return Promise.resolve(fetch('/api/devices/' + device.imei, put(device)))
     .then(function (response) {
@@ -1032,14 +1021,14 @@ module.exports.saveDevice = function(device) {
     })
 }
 
-module.exports.clickItem = function (item) {
+export function clickItem(item) {
     store.dispatch({
         type: 'SELECT_ITEM',
         item: item
     });
 }
 
-module.exports.selectDays = function (startDate, endDate) {
+export function selectDays(startDate, endDate) {
     store.dispatch({
         type: 'SELECT_DAYS',
         startDate: startDate,
@@ -1049,7 +1038,7 @@ module.exports.selectDays = function (startDate, endDate) {
     return updateSelectedVehicleHistory();
 }
 
-function selectDay (startDate) {
+export function selectDay (startDate) {
     startDate = new Date(startDate)
     store.dispatch({
         type: 'SELECT_DAYS',
@@ -1059,9 +1048,8 @@ function selectDay (startDate) {
 
     return updateSelectedVehicleHistory();
 }
-module.exports.selectDay = selectDay;
 
-function updateEvents () {
+export function updateEvents () {
     NProgress.start();
 
     let state = store.getState();
@@ -1098,9 +1086,8 @@ function updateEvents () {
         NProgress.done();
     })
 }
-module.exports.updateEvents = updateEvents;
 
-module.exports.changePage = function (pageNum) {
+export function changePage(pageNum) {
     store.dispatch({
         type: 'CHANGE_EVENTS_PAGE',
         page: pageNum
@@ -1108,7 +1095,7 @@ module.exports.changePage = function (pageNum) {
     return updateEvents();
 }
 
-module.exports.changePageSize = function (size) {
+export function changePageSize(size) {
     store.dispatch({
         type: 'CHANGE_EVENTS_PAGE_SIZE',
         size: size
@@ -1116,7 +1103,7 @@ module.exports.changePageSize = function (size) {
     return updateEvents();
 }
 
-module.exports.changePageSearch = function (search) {
+export function changePageSearch(search) {
     store.dispatch({
         type: 'CHANGE_EVENTS_PAGE_SEARCH',
         search: search
@@ -1124,7 +1111,7 @@ module.exports.changePageSearch = function (search) {
     return updateEvents();
 }
 
-module.exports.viewEvents = function () {
+export function viewEvents() {
     store.dispatch({
         type: 'VIEW',
         view: 'EVENTS',
@@ -1134,7 +1121,7 @@ module.exports.viewEvents = function () {
     return updateEvents();
 }
 
-module.exports.viewRawEvents = function () {
+export function viewRawEvents() {
     store.dispatch({
         type: 'VIEW',
         view: 'RAWEVENTS',
@@ -1144,7 +1131,7 @@ module.exports.viewRawEvents = function () {
     return updateEvents();
 }
 
-module.exports.viewExceptions = function () {
+export function viewExceptions() {
     store.dispatch({
         type: 'VIEW',
         view: 'EXCEPTIONS',
@@ -1154,7 +1141,7 @@ module.exports.viewExceptions = function () {
     return updateEvents();
 }
 
-module.exports.viewHelp = function () {
+export function viewHelp () {
     store.dispatch({
         type: 'VIEW',
         view: 'HELP',
@@ -1163,7 +1150,7 @@ module.exports.viewHelp = function () {
     });
 }
 
-module.exports.viewOrgByID = function (id) {
+export function viewOrgByID(id) {
     store.dispatch({
         type: 'VIEW',
         view: 'ORG',
@@ -1172,7 +1159,7 @@ module.exports.viewOrgByID = function (id) {
     });
 }
 
-function viewOrganizations () {
+export function viewOrganizations () {
     store.dispatch({
         type: 'VIEW',
         view: 'ORG',
@@ -1180,9 +1167,8 @@ function viewOrganizations () {
         viewID: ''
     });
 }
-module.exports.viewOrganizations = viewOrganizations;
 
-module.exports.viewUsers = function () {
+export function viewUsers() {
     store.dispatch({
         type: 'VIEW',
         view: 'USER',
@@ -1191,7 +1177,7 @@ module.exports.viewUsers = function () {
     });
 }
 
-module.exports.viewOrgUsers = function () {
+export function viewOrgUsers() {
     let state = store.getState();
 
     store.dispatch({
@@ -1202,7 +1188,7 @@ module.exports.viewOrgUsers = function () {
     });
 }
 
-module.exports.viewOrgFleets = function () {
+export function viewOrgFleets() {
     let state = store.getState();
 
     store.dispatch({
@@ -1213,7 +1199,7 @@ module.exports.viewOrgFleets = function () {
     });
 }
 
-module.exports.viewOrgVehicles = function () {
+export function viewOrgVehicles() {
     let state = store.getState();
 
     store.dispatch({
@@ -1224,16 +1210,7 @@ module.exports.viewOrgVehicles = function () {
     });
 }
 
-module.exports.viewDevices = function () {
-    store.dispatch({
-        type: 'VIEW',
-        view: 'DEVICE',
-        subview: 'ALL',
-        viewID: ''
-    });
-}
-
-module.exports.viewNewOrganization = function () {
+export function viewNewOrganization() {
     store.dispatch({
         type: 'VIEW',
         view: 'ORG',
@@ -1242,7 +1219,7 @@ module.exports.viewNewOrganization = function () {
     });
 }
 
-module.exports.viewNewDevice = function () {
+export function viewNewDevice() {
     store.dispatch({
         type: 'VIEW',
         view: 'DEVICE',
@@ -1251,7 +1228,7 @@ module.exports.viewNewDevice = function () {
     });
 }
 
-module.exports.viewNewUser = function () {
+export function viewNewUser() {
     store.dispatch({
         type: 'VIEW',
         view: 'USER',
@@ -1260,7 +1237,7 @@ module.exports.viewNewUser = function () {
     });
 }
 
-module.exports.viewNewVehicle = function () {
+export function viewNewVehicle() {
     store.dispatch({
         type: 'VIEW',
         view: 'VEHICLE',
@@ -1269,7 +1246,7 @@ module.exports.viewNewVehicle = function () {
     });
 }
 
-module.exports.viewVehicleByID = function (id) {
+export function viewVehicleByID(id) {
     store.dispatch({
         type: 'VIEW',
         view: 'VEHICLE',
@@ -1278,7 +1255,7 @@ module.exports.viewVehicleByID = function (id) {
     });
 }
 
-module.exports.viewDevices = function () {
+export function viewDevices() {
     store.dispatch({
         type: 'VIEW',
         view: 'DEVICE',
@@ -1287,7 +1264,7 @@ module.exports.viewDevices = function () {
     });
 }
 
-module.exports.viewDeviceByID = function (id) {
+export function viewDeviceByID(id) {
     store.dispatch({
         type: 'VIEW',
         view: 'DEVICE',
@@ -1296,7 +1273,7 @@ module.exports.viewDeviceByID = function (id) {
     });
 }
 
-module.exports.viewUserByID = function (id) {
+export function viewUserByID(id) {
     store.dispatch({
         type: 'VIEW',
         view: 'USER',
@@ -1305,25 +1282,25 @@ module.exports.viewUserByID = function (id) {
     });
 }
 
-module.exports.viewReports = function () {
+export function viewReports() {
     store.dispatch({
         type: 'VIEW_REPORTS',
     });
 }
 
-module.exports.viewMap = function () {
+export function viewMap () {
     store.dispatch({
         type: 'VIEW_MAP',
     });
 }
 
-module.exports.viewSplitScreen = function () {
+export function viewSplitScreen() {
     store.dispatch({
         type: 'VIEW_SPLIT_SCREEN',
     });
 }
 
-module.exports.editOrganization = function (id) {
+export function editOrganization(id) {
     store.dispatch({
         type: 'VIEW',
         view: 'ORG',
@@ -1332,21 +1309,21 @@ module.exports.editOrganization = function (id) {
     });
 }
 
-module.exports.setAutoUpdate = function (bool) {
+export function setAutoUpdate(bool) {
     store.dispatch({
         type: 'AUTOUPDATE',
         value: bool
     });
 }
 
-module.exports.setShowVerbose = function (bool) {
+export function setShowVerbose (bool) {
     store.dispatch({
         type: 'SHOWVERBOSE',
         value: bool
     });
 }
 
-module.exports.setShowLatLong = function (bool) {
+export function setShowLatLong (bool) {
     store.dispatch({
         type: 'SHOWLATLONG',
         value: bool

@@ -25,7 +25,7 @@ const withAuth = require('../withAuth');
 
 const appState = require('../appState');
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
 	const ctrl = this;
 
 	ctrl.executing = false;
@@ -117,7 +117,7 @@ module.exports.controller = function(args, extras) {
 	}
 };
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 	return m('.div', [
 		m('div.business-table',
 			m('.row', [

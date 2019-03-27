@@ -15,7 +15,7 @@ const catchhandler = require('./catchhandler');
 const Cookies = require('cookies-js');
 const fullAddress = require('../common/addressdisplay').full;
 
-module.exports.controller = function(args, extras) {
+export function controller(args, extras) {
     const ctrl = this;
     ctrl.parsed = m.prop({});
 
@@ -77,7 +77,7 @@ module.exports.controller = function(args, extras) {
     }
 };
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 
     const state = appState.getState();
     const events = state.events;

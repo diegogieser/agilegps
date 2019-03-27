@@ -11,7 +11,7 @@ const _ = require('lodash');
 const isUserMetric = require('../isUserMetric');
 const formatDate = require('../formatDate');
 
-module.exports.view = function(ctrl, args, extras) {
+export function view(ctrl, args, extras) {
 
     if (!(args.result() && args.result().vehicles && args.result().results)) {
         return '';
